@@ -23,7 +23,7 @@ class VTKRenderer(object):
         self.readerVolume.SetNumberOfScalarComponents(1)
         self.readerVolume.SetDataExtent(0, nx - 1, 0, ny - 1, 0, nz - 1)
         self.readerVolume.SetWholeExtent(0, nx - 1, 0, ny - 1, 0, nz - 1)
-        # self.readerVolume.SetDataSpacing( 1,1,1 )
+        self.readerVolume.SetDataSpacing(1, 1, 1)
 
         self.contour = vtk.vtkMarchingCubes()
         self.contour.SetInput(self.readerVolume.GetOutput())
