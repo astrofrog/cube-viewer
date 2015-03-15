@@ -1,3 +1,4 @@
+import sys
 import vtk
 import numpy as np
 from astropy.io import fits
@@ -33,8 +34,12 @@ class VTKRenderer(object):
         self.mapper.SetInput(self.contour.GetOutput())
         self.mapper.ScalarVisibilityOff()
 
-        self.actor = vtk.vtkActor()
+        self.actor = vtk.vtkLODActor()
         self.actor.SetMapper(self.mapper)
+        self.actor.SetNumberOfCloudPoints(100000)
+        self.actor.SetMapper(self.mapper)
+        self.actor.GetProperty().SetColor(1, 0.5, 0.5)
+        self.actor.GetProperty().SetOpacity(0.3)
 
         self.ren = vtk.vtkRenderer()
         self.ren.AddActor(self.actor)
@@ -61,4 +66,4 @@ class VTKRenderer(object):
         app.exec_()
 
 if __name__ == "__main__":
-    v = VTKRenderer(filename)
+    v = VTKRenderer(sys.argv[1])
