@@ -6,9 +6,11 @@ from PyQt4 import QtGui
 from vtk.qt4.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 
-class VTKRenderer(object):
+class QtVTKRenderer(QtGui.QWidget):
 
     def __init__(self, filename):
+
+        super(VTKRenderer, self).__init__()
 
         data_matrix = fits.getdata(filename)
         data_matrix = data_matrix[145:245, :, :]
@@ -27,7 +29,7 @@ class VTKRenderer(object):
 
         self.contour = vtk.vtkMarchingCubes()
         self.contour.SetInput(self.readerVolume.GetOutput())
-        self.contour.SetValue(0, 100)
+        self.contour.SetValue(0, 150)
         self.contour.ComputeNormalsOn()
 
         self.mapper = vtk.vtkPolyDataMapper()
@@ -50,9 +52,7 @@ class VTKRenderer(object):
 
         self.ren.ResetCameraClippingRange()
 
-        app = QtGui.QApplication(['QVTKRenderWindowInteractor'])
-
-        self.vtkw = QVTKRenderWindowInteractor(rw=self.renWin)
+        self.vtkw = QVTKRenderWindowInteractor(self, rw=self.renWin)
         self.vtkw.resize(800, 800)
         self.vtkw.AddObserver("ExitEvent", lambda o, e, a=app: a.quit())
 
@@ -61,9 +61,12 @@ class VTKRenderer(object):
         self.vtkw.Initialize()
         self.vtkw.Start()
 
-        self.vtkw.show()
-
-        app.exec_()
 
 if __name__ == "__main__":
-    v = VTKRenderer(sys.argv[1])
+
+    app = QtGui.QApplication(['QVTKRenderWindowInteractor'])
+
+    w = QtVTKRenderer(sys.argv[1])
+    w.show()
+
+    app.exec_()
