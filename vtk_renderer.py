@@ -4,20 +4,28 @@ import numpy as np
 from astropy.io import fits
 from PyQt4 import QtGui
 from vtk.qt4.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
+from palettable.colorbrewer import get_map
 
 
 class QtVTKRenderer(QtGui.QWidget):
 
-    def __init__(self, filename):
+    def __init__(self, data, vmin=None, vmax=None, levels=[]):
 
         super(QtVTKRenderer, self).__init__()
 
-        data_matrix = fits.getdata(filename)
-        data_matrix = data_matrix[145:245, :, :]
-        data_matrix[data_matrix < 0.7] = 0.
-        data_matrix = (data_matrix * 100).astype(np.uint8)
-        nz, ny, nx = data_matrix.shape
-        data_string = data_matrix.tostring()
+        # Prepare data
+        if vmin is None:
+            vmin = np.nanmin(data)
+        if vmax is None:
+            vmax = np.nanmax(data)
+        nz, ny, nx = data.shape
+        data = np.clip((data - vmin) / (vmax - vmin) * 255., 0., 255.)
+        data = data.astype(np.uint8)
+        data_string = data.tostring()
+        
+        # Prepare levels
+        levels = np.asarray(levels)
+        levels = np.clip((levels - vmin) / (vmax - vmin) * 255., 0., 255.)
 
         self.readerVolume = vtk.vtkImageImport()
         self.readerVolume.CopyImportVoidPointer(data_string, len(data_string))
@@ -39,9 +47,10 @@ class QtVTKRenderer(QtGui.QWidget):
         self.vtkw.resize(800, 800)
         self.vtkw.AddObserver("ExitEvent", lambda o, e, a=app: a.quit())
 
-        self.add_contour(50., color=(252./255., 141./255., 89./255.), alpha=0.4)
-        self.add_contour(130., color=(1,1,191./255), alpha=0.4)
-        self.add_contour(200, color=(145./255, 191./255., 219./255.), alpha=0.4)
+        palette = get_map('RdYlBu', 'diverging', len(levels))
+
+        for ilevel, level in enumerate(levels):
+            self.add_contour(level, color=palette.mpl_colors[ilevel], alpha=0.4)
 
         self.renWin.Render()
         self.renWin.PolygonSmoothingOn()
@@ -72,9 +81,13 @@ class QtVTKRenderer(QtGui.QWidget):
 
 if __name__ == "__main__":
 
+    data = fits.getdata(sys.argv[1])
+    data = data[145:245, :, :]
+    data[data < 0.7] = 0.
+
     app = QtGui.QApplication(['QVTKRenderWindowInteractor'])
 
-    w = QtVTKRenderer(sys.argv[1])
+    w = QtVTKRenderer(data, vmin=0., vmax=5., levels=[1.0, 2.0, 3.0, 4.0])
     w.show()
 
     app.exec_()
