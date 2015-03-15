@@ -53,7 +53,7 @@ class VTKRenderer(object):
         app = QtGui.QApplication(['QVTKRenderWindowInteractor'])
 
         self.vtkw = QVTKRenderWindowInteractor(rw=self.renWin)
-
+        self.vtkw.resize(800, 800)
         self.vtkw.AddObserver("ExitEvent", lambda o, e, a=app: a.quit())
 
         self.renWin.Render()
