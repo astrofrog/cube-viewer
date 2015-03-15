@@ -10,7 +10,7 @@ class QtVTKRenderer(QtGui.QWidget):
 
     def __init__(self, filename):
 
-        super(VTKRenderer, self).__init__()
+        super(QtVTKRenderer, self).__init__()
 
         data_matrix = fits.getdata(filename)
         data_matrix = data_matrix[145:245, :, :]
@@ -27,24 +27,7 @@ class QtVTKRenderer(QtGui.QWidget):
         self.readerVolume.SetWholeExtent(0, nx - 1, 0, ny - 1, 0, nz - 1)
         self.readerVolume.SetDataSpacing(1, 1, 1)
 
-        self.contour = vtk.vtkMarchingCubes()
-        self.contour.SetInput(self.readerVolume.GetOutput())
-        self.contour.SetValue(0, 150)
-        self.contour.ComputeNormalsOn()
-
-        self.mapper = vtk.vtkPolyDataMapper()
-        self.mapper.SetInput(self.contour.GetOutput())
-        self.mapper.ScalarVisibilityOff()
-
-        self.actor = vtk.vtkLODActor()
-        self.actor.SetMapper(self.mapper)
-        self.actor.SetNumberOfCloudPoints(100000)
-        self.actor.SetMapper(self.mapper)
-        self.actor.GetProperty().SetColor(1, 0.5, 0.5)
-        self.actor.GetProperty().SetOpacity(0.3)
-
         self.ren = vtk.vtkRenderer()
-        self.ren.AddActor(self.actor)
         self.ren.SetBackground(0, 0, 0)
 
         self.renWin = vtk.vtkRenderWindow()
@@ -56,10 +39,35 @@ class QtVTKRenderer(QtGui.QWidget):
         self.vtkw.resize(800, 800)
         self.vtkw.AddObserver("ExitEvent", lambda o, e, a=app: a.quit())
 
+        self.add_contour(50., color=(252./255., 141./255., 89./255.), alpha=0.4)
+        self.add_contour(130., color=(1,1,191./255), alpha=0.4)
+        self.add_contour(200, color=(145./255, 191./255., 219./255.), alpha=0.4)
+
         self.renWin.Render()
         self.renWin.PolygonSmoothingOn()
         self.vtkw.Initialize()
         self.vtkw.Start()
+
+    def add_contour(self, level, color=(1., 1., 1.), alpha=1.):
+
+        contour = vtk.vtkMarchingCubes()
+        contour.SetInput(self.readerVolume.GetOutput())
+        contour.SetValue(0, level)
+        contour.ComputeNormalsOn()
+
+        mapper = vtk.vtkPolyDataMapper()
+        mapper.SetInput(contour.GetOutput())
+        mapper.ScalarVisibilityOff()
+
+        actor = vtk.vtkLODActor()
+        actor.SetMapper(mapper)
+        actor.SetNumberOfCloudPoints(100000)
+        actor.SetMapper(mapper)
+        actor.GetProperty().SetColor(*color)
+        actor.GetProperty().SetOpacity(alpha)
+
+        self.ren.AddActor(actor)
+        self.renWin.Render()
 
 
 if __name__ == "__main__":
