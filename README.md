@@ -21,3 +21,5 @@ e.g.
 ```
 python vtk_renderer.py ../L1448_13CO.fits 1 2 3 4 5 --stretch-spectral=2.
 ```
+
+![screenshot](screenshot.png)
