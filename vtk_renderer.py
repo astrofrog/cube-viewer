@@ -102,7 +102,7 @@ if __name__ == "__main__":
     vmin = levels.min() / 2.
     vmax = levels.max() * 2.
 
-    w = QtVTKRenderer(data, vmin=vmin, vmax=vmax, levels=levels, spectral_stretch=float(args.stretch_spectral))
+    w = QtVTKRenderer(data.unmasked_data[:,:,:].value, vmin=vmin, vmax=vmax, levels=levels, spectral_stretch=float(args.stretch_spectral))
     w.show()
 
     app.exec_()
