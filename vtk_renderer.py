@@ -88,7 +88,7 @@ if __name__ == "__main__":
                        help='the name of the file to read in')
     parser.add_argument('levels', nargs="+", type=float,
                        help='the levels to show')
-    parser.add_argument('--stretch-spectral', nargs=1, help='Factor by which to stretch spectral dimension', default=1)
+    parser.add_argument('--stretch-spectral', help='Factor by which to stretch spectral dimension', default=1)
 
     args = parser.parse_args()
     if len(args.levels) > 8:
@@ -102,7 +102,7 @@ if __name__ == "__main__":
     vmin = levels.min() / 2.
     vmax = levels.max() * 2.
 
-    w = QtVTKRenderer(data, vmin=vmin, vmax=vmax, levels=levels, spectral_stretch=float(args.stretch_spectral[0]))
+    w = QtVTKRenderer(data, vmin=vmin, vmax=vmax, levels=levels, spectral_stretch=float(args.stretch_spectral))
     w.show()
 
     app.exec_()
