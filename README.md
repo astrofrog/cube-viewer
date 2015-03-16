@@ -4,9 +4,9 @@ About
 Experiments with VTK and iso-contour drawing. You can create a conda environment to try this out in using:
 
 ```
-conda create -n vtk-viewer-test python=2.7 pip --yes
+conda create -n vtk-viewer-test python=2.7 --yes
 source activate vtk-viewer-test
-conda install pyqt vtk numpy astropy --yes
+conda install pyqt vtk numpy astropy pip --yes
 pip install spectral_cube palettable
 ```
 
