@@ -27,10 +27,15 @@ class IsosurfaceOptionsWidget(QtGui.QWidget):
         self.ui.apply.clicked.connect(self.update_viewer)
 
         self._vtk_widget = vtk_widget
+        self.set_levels([])
+        self.set_spectral_stretch(1)
 
     def set_levels(self, levels):
-        self.ui.values_field.setText(", ".join([str(x) for x in levels]))
-
+        if isinstance(levels, (list, tuple)):
+            self.ui.values_field.setText(", ".join([str(x) for x in levels]))
+        else:
+            self.ui.values_field.setText(levels)
+            
     def set_spectral_stretch(self, spectral_stretch):
         self.ui.spectral_stretch_field.setText("{0:g}".format(spectral_stretch))
 

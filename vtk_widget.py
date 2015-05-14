@@ -33,7 +33,8 @@ class QtVTKWidget(QtGui.QWidget):
 
     def resizeEvent(self, event):
         super(QtVTKWidget, self).resizeEvent(event)
-        self.window_interactor.resize(self.height(), self.width())
+        print(self.height(), self.width())
+        self.window_interactor.resize(self.width(), self.height())
 
     def set_data(self, data):
         self.data = data
@@ -70,6 +71,9 @@ class QtVTKWidget(QtGui.QWidget):
         self.reader_volume.SetDataExtent(0, self.nx - 1, 0, self.ny - 1, 0, self.nz - 1)
         self.reader_volume.SetWholeExtent(0, self.nx - 1, 0, self.ny - 1, 0, self.nz - 1)
         self.reader_volume.SetDataSpacing(1, 1, self._spectral_stretch)
+        self.reader_volume.SetDataOrigin(self.nx / 2., self.ny / 2., self.nz / 2.)
+
+        print("HERE", self._spectral_stretch)
 
         self.render_window.AddRenderer(self.ren)
 
@@ -78,7 +82,6 @@ class QtVTKWidget(QtGui.QWidget):
     def reset_levels(self):
         self.ren.RemoveAllViewProps()
         self._levels = []
-
 
     def set_levels(self, levels):
 
@@ -116,6 +119,7 @@ class QtVTKWidget(QtGui.QWidget):
             else:
                 x = (level - vmin) / float(vmax - vmin)
             color = self._cmap(x)
+            print(color, self._alpha)
             actor.GetProperty().SetColor(*color[:3])
             actor.GetProperty().SetOpacity(self._alpha)
 
@@ -140,5 +144,4 @@ class QtVTKWidget(QtGui.QWidget):
         self.ren.AddActor(actor)
 
     def render(self):
-        print('rendering')
         self.render_window.Render()
