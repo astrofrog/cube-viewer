@@ -2,7 +2,7 @@ import os
 
 import six
 import numpy as np
-from PyQt4 import QtGui
+from glue.external.qt import QtGui
 from glue.qt.qtutil import load_ui
 from glue.qt import get_qapp
 from palettable.colorbrewer import COLOR_MAPS

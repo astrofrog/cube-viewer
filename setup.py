@@ -1,3 +1,4 @@
+import os
 from setuptools import setup, Command
 
 
@@ -15,4 +16,5 @@ setup(name='cube-viewer',
                    "Programming Language :: Python",
                    "License :: OSI Approved :: BSD License",
                   ],
+      scripts=[os.path.join('scripts', 'cube-viewer')]
      )

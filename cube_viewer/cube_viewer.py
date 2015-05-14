@@ -3,7 +3,7 @@ import argparse
 
 import numpy as np
 
-from PyQt4 import QtGui
+from glue.external.qt import QtGui
 from glue.qt.qtutil import load_ui
 from glue.qt import get_qapp
 
@@ -33,7 +33,7 @@ class StandaloneViewer(QtGui.QWidget):
         self.ui.main.addWidget(self.options_widget)
 
 
-if __name__ == "__main__":
+def main():
 
     parser = argparse.ArgumentParser(description='View a spectral cube')
     parser.add_argument('filename', type=str,

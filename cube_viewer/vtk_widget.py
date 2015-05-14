@@ -1,7 +1,6 @@
-
 import vtk
 import numpy as np
-from PyQt4 import QtGui
+from glue.external.qt import QtGui
 from vtk.qt4.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 from palettable.colorbrewer import get_map
