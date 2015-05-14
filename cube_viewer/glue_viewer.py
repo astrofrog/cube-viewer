@@ -1,8 +1,8 @@
 import numpy as np
 from glue.qt.widgets.data_viewer import DataViewer
 
-from options_widget import IsosurfaceOptionsWidget
-from vtk_widget import QtVTKWidget
+from .options_widget import IsosurfaceOptionsWidget
+from .vtk_widget import QtVTKWidget
 
 
 class GlueVTKViewer(DataViewer):
@@ -24,7 +24,3 @@ class GlueVTKViewer(DataViewer):
 
     def options_widget(self):
         return self._options_widget
-
-
-from glue.config import qt_client
-qt_client.add(GlueVTKViewer)

@@ -9,8 +9,8 @@ from glue.qt import get_qapp
 
 from spectral_cube import SpectralCube
 
-from options_widget import IsosurfaceOptionsWidget
-from vtk_widget import QtVTKWidget
+from .options_widget import IsosurfaceOptionsWidget
+from .vtk_widget import QtVTKWidget
 
 UI_MAIN = os.path.join(os.path.dirname(__file__), 'standalone.ui')
 
