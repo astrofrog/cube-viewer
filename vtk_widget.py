@@ -27,9 +27,10 @@ class QtVTKWidget(QtGui.QWidget):
         self.window_interactor.Start()
 
         self.data = None
-        self.set_levels([])
-        self.set_cmap('RdYlBu', 'diverging')
-        self.set_spectral_stretch(1)
+        self.levels = []
+        self.cmap = 'RdYlBu'
+        self.alpha = 0.5
+        self.spectral_stretch = 1.
 
     def resizeEvent(self, event):
         super(QtVTKWidget, self).resizeEvent(event)
@@ -41,7 +42,12 @@ class QtVTKWidget(QtGui.QWidget):
         self.nz, self.ny, self.nx = data.shape
         self._update_scaled_data()
 
-    def set_spectral_stretch(self, value):
+    @property
+    def spectral_stretch(self):
+        return self._spectral_stretch
+
+    @spectral_stretch.setter
+    def spectral_stretch(self, value):
         self._spectral_stretch = value
         self._update_scaled_data()
 
@@ -73,36 +79,50 @@ class QtVTKWidget(QtGui.QWidget):
         self.reader_volume.SetDataSpacing(1, 1, self._spectral_stretch)
         self.reader_volume.SetDataOrigin(self.nx / 2., self.ny / 2., self.nz / 2.)
 
-        print("HERE", self._spectral_stretch)
-
         self.render_window.AddRenderer(self.ren)
 
         self.ren.ResetCameraClippingRange()
 
-    def reset_levels(self):
-        self.ren.RemoveAllViewProps()
-        self._levels = []
+    @property
+    def levels(self):
+        return self._levels
 
-    def set_levels(self, levels):
+    @levels.setter
+    def levels(self, values):
 
-        self.reset_levels()
+        self._reset_levels()
 
-        if len(levels) == 0:
+        if len(values) == 0:
+            self._levels = []
             return
 
-        levels = np.asarray(levels)
-        levels = np.clip((levels - self.vmin) / (self.vmax - self.vmin) * 255., 0., 255.)
+        values = np.asarray(values)
+        values = np.clip((values - self.vmin) / (self.vmax - self.vmin) * 255., 0., 255.)
 
-        for ilevel, level in enumerate(levels):
+        for ilevel, level in enumerate(values):
             self.add_contour(level, ilevel)
-
-        self.levels = levels
 
         self._update_level_colors()
 
-    def set_cmap(self, name, type, alpha=1):
-        self._cmap = get_map(name, type, 5).mpl_colormap
-        self._alpha = alpha
+    def _reset_levels(self):
+        self.ren.RemoveAllViewProps()
+
+    @property
+    def cmap(self):
+        return self._cmap
+
+    @cmap.setter
+    def cmap(self, name):
+        self._cmap = get_map(name, 'diverging', 5).mpl_colormap
+        self._update_level_colors()
+
+    @property
+    def alpha(self):
+        return self._alpha
+
+    @alpha.setter
+    def alpha(self, value):
+        self._alpha = value
         self._update_level_colors()
 
     def _update_level_colors(self):
@@ -119,9 +139,9 @@ class QtVTKWidget(QtGui.QWidget):
             else:
                 x = (level - vmin) / float(vmax - vmin)
             color = self._cmap(x)
-            print(color, self._alpha)
-            actor.GetProperty().SetColor(*color[:3])
-            actor.GetProperty().SetOpacity(self._alpha)
+            prop = actor.GetProperty()
+            prop.SetColor(*color[:3])
+            prop.SetOpacity(self.alpha)
 
     def add_contour(self, level, ilevel, color=(1., 1., 1.), alpha=1.):
 

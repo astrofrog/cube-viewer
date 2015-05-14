@@ -55,13 +55,11 @@ if __name__ == "__main__":
     app = get_qapp()
 
     levels = np.array(args.levels)
-    vmin = levels.min() / 2.
-    vmax = levels.max() * 2.
 
     w = StandaloneViewer()
     
-    w.options_widget.set_levels(levels)
-    w.options_widget.set_spectral_stretch(float(args.stretch_spectral))
+    w.options_widget.levels = levels
+    w.options_widget.spectral_stretch = float(args.stretch_spectral)
 
     w.vtk_widget.set_data(data.unmasked_data[:,:,:].value)
 
