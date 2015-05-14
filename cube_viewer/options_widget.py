@@ -9,7 +9,7 @@ from palettable.colorbrewer import COLOR_MAPS
 
 __all__ = ["IsosurfaceOptionsWidget"]
 
-UI_MAIN = os.path.join(os.path.dirname(__file__), 'options.ui')
+UI_MAIN = os.path.join(os.path.dirname(__file__), 'options_widget.ui')
 
 
 class IsosurfaceOptionsWidget(QtGui.QWidget):

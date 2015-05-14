@@ -1,2 +1,2 @@
-from cube_viewer.cube_viewer import main
+from cube_viewer.standalone import main
 main()
