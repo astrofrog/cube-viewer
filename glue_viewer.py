@@ -23,8 +23,7 @@ class GlueVTKViewer(DataViewer):
 
     def options_widget(self):
         return self._options_widget
-        
+
 
 from glue.config import qt_client
 qt_client.add(GlueVTKViewer)
-        

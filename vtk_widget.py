@@ -93,7 +93,6 @@ class QtVTKWidget(QtGui.QWidget):
         self._reset_levels()
 
         if len(values) == 0:
-            self._levels = []
             return
 
         values = np.asarray(values)
@@ -106,6 +105,7 @@ class QtVTKWidget(QtGui.QWidget):
 
     def _reset_levels(self):
         self.ren.RemoveAllViewProps()
+        self._levels = []
 
     @property
     def cmap(self):

@@ -32,12 +32,26 @@ class IsosurfaceOptionsWidget(QtGui.QWidget):
         self.spectral_stretch = 1.
         self.alpha = 0.5
 
+        print(dir(self.ui.cmap_menu))
+        self.ui.cmap_menu.currentIndexChanged.connect(self.update_live)
+        self.ui.alpha_slider.valueChanged.connect(self.update_live)
+        self.ui.values_field.returnPressed.connect(self.update_live)
+        self.ui.spectral_stretch_field.returnPressed.connect(self.update_live)
+
+    def update_live(self):
+        if self.live:
+            self.update_viewer()
+
     def update_viewer(self):
         self._vtk_widget.spectral_stretch = self.spectral_stretch
         self._vtk_widget.cmap = self.cmap
         self._vtk_widget.alpha = self.alpha
         self._vtk_widget.levels = self.levels
         self._vtk_widget.render()
+
+    @property
+    def live(self):
+        return self.ui.live_checkbox.isChecked()
 
     @property
     def spectral_stretch(self):
