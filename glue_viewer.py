@@ -1,5 +1,6 @@
-from glue.qt.widgets.data_viewer import DataViewer
 import numpy as np
+from glue.qt.widgets.data_viewer import DataViewer
+
 from options_widget import IsosurfaceOptionsWidget
 from vtk_widget import QtVTKWidget
 
@@ -17,7 +18,7 @@ class GlueVTKViewer(DataViewer):
     def add_data(self, data):
         self._vtk_widget.set_data(data['PRIMARY'])
         initial_level = "{0:.3g}".format(np.percentile(data['PRIMARY'], 99))
-        self._options_widget.set_levels(initial_level)
+        self._options_widget.levels = initial_level
         self._options_widget.update_viewer()
         return True
 

@@ -1,20 +1,16 @@
+import os
 import argparse
 
 import numpy as np
 
-from spectral_cube import SpectralCube
-
+from PyQt4 import QtGui
+from glue.qt.qtutil import load_ui
 from glue.qt import get_qapp
+
+from spectral_cube import SpectralCube
 
 from options_widget import IsosurfaceOptionsWidget
 from vtk_widget import QtVTKWidget
-
-import os
-
-from PyQt4 import QtGui
-from glue.qt.qtutil import load_ui
-
-from palettable.colorbrewer import COLOR_MAPS
 
 UI_MAIN = os.path.join(os.path.dirname(__file__), 'standalone.ui')
 
@@ -34,7 +30,6 @@ class StandaloneViewer(QtGui.QWidget):
         
         self.options_widget = IsosurfaceOptionsWidget(vtk_widget=self.vtk_widget)
         self.ui.main.addWidget(self.options_widget)
-        # self.options_widget.setFixedSize(400, 800)
 
 
 if __name__ == "__main__":

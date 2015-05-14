@@ -1,15 +1,13 @@
 import os
 
+import six
+import numpy as np
 from PyQt4 import QtGui
 from glue.qt.qtutil import load_ui
 from glue.qt import get_qapp
-
-import six
-import numpy as np
-
 from palettable.colorbrewer import COLOR_MAPS
 
-__all__ = ["IsosurfaceOptions"]
+__all__ = ["IsosurfaceOptionsWidget"]
 
 UI_MAIN = os.path.join(os.path.dirname(__file__), 'options.ui')
 
@@ -32,7 +30,6 @@ class IsosurfaceOptionsWidget(QtGui.QWidget):
         self.spectral_stretch = 1.
         self.alpha = 0.5
 
-        print(dir(self.ui.cmap_menu))
         self.ui.cmap_menu.currentIndexChanged.connect(self.update_live)
         self.ui.alpha_slider.valueChanged.connect(self.update_live)
         self.ui.values_field.returnPressed.connect(self.update_live)
@@ -80,7 +77,14 @@ class IsosurfaceOptionsWidget(QtGui.QWidget):
 
     @property
     def levels(self):
-        return np.array(self.ui.values_field.text().split(','), dtype=float)
+        text = self.ui.values_field.text()
+        try:
+            return np.array(text.split(','), dtype=float)
+        except:
+            QtGui.QMessageBox.critical(self,
+                                       "Error", "Could not parse levels: {0}".format(text),
+                                       buttons=QtGui.QMessageBox.Ok)
+            return np.array([])
 
     @levels.setter
     def levels(self, levels):

@@ -6,6 +6,7 @@ from vtk.qt4.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 from palettable.colorbrewer import get_map
 
+__all__ = ['QtVTKWidget']
 
 class QtVTKWidget(QtGui.QWidget):
 
@@ -34,7 +35,6 @@ class QtVTKWidget(QtGui.QWidget):
 
     def resizeEvent(self, event):
         super(QtVTKWidget, self).resizeEvent(event)
-        print(self.height(), self.width())
         self.window_interactor.resize(self.width(), self.height())
 
     def set_data(self, data):
