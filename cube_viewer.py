@@ -14,6 +14,7 @@ from vtk_widget import QtVTKWidget
 
 UI_MAIN = os.path.join(os.path.dirname(__file__), 'standalone.ui')
 
+
 class StandaloneViewer(QtGui.QWidget):
 
     def __init__(self, parent=None):
@@ -27,7 +28,7 @@ class StandaloneViewer(QtGui.QWidget):
         self.vtk_widget = QtVTKWidget()
         self.ui.main.addWidget(self.vtk_widget)
         self.vtk_widget.setFixedSize(750, 750)
-        
+
         self.options_widget = IsosurfaceOptionsWidget(vtk_widget=self.vtk_widget)
         self.ui.main.addWidget(self.options_widget)
 
@@ -36,9 +37,9 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='View a spectral cube')
     parser.add_argument('filename', type=str,
-                       help='the name of the file to read in')
+                        help='the name of the file to read in')
     parser.add_argument('levels', nargs="+", type=float,
-                       help='the levels to show')
+                        help='the levels to show')
     parser.add_argument('--stretch-spectral', help='Factor by which to stretch spectral dimension', default=1)
 
     args = parser.parse_args()
@@ -52,11 +53,11 @@ if __name__ == "__main__":
     levels = np.array(args.levels)
 
     w = StandaloneViewer()
-    
+
     w.options_widget.levels = levels
     w.options_widget.spectral_stretch = float(args.stretch_spectral)
 
-    w.vtk_widget.set_data(data.unmasked_data[:,:,:].value)
+    w.vtk_widget.set_data(data.unmasked_data[:, :, :].value)
 
     w.options_widget.update_viewer()
 

@@ -8,6 +8,7 @@ from palettable.colorbrewer import get_map
 
 __all__ = ['QtVTKWidget']
 
+
 class QtVTKWidget(QtGui.QWidget):
 
     def __init__(self, parent=None):

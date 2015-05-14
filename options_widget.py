@@ -94,7 +94,6 @@ class IsosurfaceOptionsWidget(QtGui.QWidget):
             self.ui.values_field.setText(", ".join([str(x) for x in levels]))
 
 
-
 if __name__ == "__main__":
     app = get_qapp()
     d = IsosurfaceOptionsWidget()
