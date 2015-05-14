@@ -36,14 +36,6 @@ class StandaloneViewer(QtGui.QWidget):
         self.ui.main.addWidget(self.options_widget)
         # self.options_widget.setFixedSize(400, 800)
 
-# def launch_standalone_viewer(data):
-#
-#     app = get_qapp()
-#     d = StandaloneViewer()
-#     d.show()
-#     app.exec_()
-#     app.quit()
-
 
 if __name__ == "__main__":
 
@@ -68,11 +60,10 @@ if __name__ == "__main__":
 
     w = StandaloneViewer()
     
-    w.options_widget.set_levels_field(levels)
+    w.options_widget.set_levels(levels)
+    w.options_widget.set_spectral_stretch(float(args.stretch_spectral))
 
-    w.vtk_widget.set_data(data.unmasked_data[:,:,:].value,
-               vmin=vmin, vmax=vmax, 
-               spectral_stretch=float(args.stretch_spectral))
+    w.vtk_widget.set_data(data.unmasked_data[:,:,:].value)
 
     w.options_widget.update_viewer()
 

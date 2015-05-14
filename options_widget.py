@@ -28,13 +28,21 @@ class IsosurfaceOptionsWidget(QtGui.QWidget):
 
         self._vtk_widget = vtk_widget
 
-    def set_levels_field(self, levels):
+    def set_levels(self, levels):
         self.ui.values_field.setText(", ".join([str(x) for x in levels]))
 
+    def set_spectral_stretch(self, spectral_stretch):
+        self.ui.spectral_stretch_field.setText("{0:g}".format(spectral_stretch))
+
     def update_viewer(self):
+        self._vtk_widget.set_spectral_stretch(self.spectral_stretch)
         self._vtk_widget.set_cmap(self.cmap, 'diverging', alpha=self.get_alpha())
         self._vtk_widget.set_levels(self.values)
         self._vtk_widget.render()
+
+    @property
+    def spectral_stretch(self):
+        return float(self.ui.spectral_stretch_field.text())
 
     @property
     def alpha(self):

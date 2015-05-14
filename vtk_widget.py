@@ -19,44 +19,57 @@ class QtVTKWidget(QtGui.QWidget):
         self.render_window = vtk.vtkRenderWindow()
 
         self.window_interactor = QVTKRenderWindowInteractor(self, rw=self.render_window)
-        
+
         self.render_window.Render()
         self.render_window.PolygonSmoothingOn()
 
         self.window_interactor.Initialize()
         self.window_interactor.Start()
 
-        self._levels = []
+        self.data = None
+        self.set_levels([])
         self.set_cmap('RdYlBu', 'diverging')
-        
+        self.set_spectral_stretch(1)
+
     def resizeEvent(self, event):
         super(QtVTKWidget, self).resizeEvent(event)
         self.window_interactor.resize(self.height(), self.width())
 
-    def set_data(self, data, vmin=None, vmax=None, spectral_stretch=1.):
+    def set_data(self, data):
+        self.data = data
+        self.nz, self.ny, self.nx = data.shape
+        self._update_scaled_data()
+
+    def set_spectral_stretch(self, value):
+        self._spectral_stretch = value
+        self._update_scaled_data()
+
+    def _update_scaled_data(self, vmin=None, vmax=None):
+
+        if self.data is None:
+            return
 
         if vmin is None:
-            self.vmin = np.nanmin(data)
+            self.vmin = np.nanmin(self.data)
         else:
             self.vmin = vmin
 
         if vmax is None:
-            self.vmax = np.nanmax(data)
+            self.vmax = np.nanmax(self.data)
         else:
             self.vmax = vmax
 
-        nz, ny, nx = data.shape
-        data = np.clip((data - self.vmin) / (self.vmax - self.vmin) * 255., 0., 255.)
+        data = np.clip((self.data - self.vmin) / (self.vmax - self.vmin) * 255., 0., 255.)
         data = data.astype(np.uint8)
         data_string = data.tostring()
 
-        self.readerVolume = vtk.vtkImageImport()
-        self.readerVolume.CopyImportVoidPointer(data_string, len(data_string))
-        self.readerVolume.SetDataScalarTypeToUnsignedChar()
-        self.readerVolume.SetNumberOfScalarComponents(1)
-        self.readerVolume.SetDataExtent(0, nx - 1, 0, ny - 1, 0, nz - 1)
-        self.readerVolume.SetWholeExtent(0, nx - 1, 0, ny - 1, 0, nz - 1)
-        self.readerVolume.SetDataSpacing(1, 1, spectral_stretch)
+        self.reader_volume = vtk.vtkImageImport()
+        self.reader_volume.CopyImportVoidPointer(data_string, len(data_string))
+        self.reader_volume.SetDataScalarTypeToUnsignedChar()
+        self.reader_volume.SetNumberOfScalarComponents(1)
+        self.reader_volume.SetDataExtent(0, self.nx - 1, 0, self.ny - 1, 0, self.nz - 1)
+        self.reader_volume.SetWholeExtent(0, self.nx - 1, 0, self.ny - 1, 0, self.nz - 1)
+        self.reader_volume.SetDataSpacing(1, 1, self._spectral_stretch)
 
         self.render_window.AddRenderer(self.ren)
 
@@ -66,10 +79,14 @@ class QtVTKWidget(QtGui.QWidget):
         self.ren.RemoveAllViewProps()
         self._levels = []
 
+
     def set_levels(self, levels):
-    
+
         self.reset_levels()
-    
+
+        if len(levels) == 0:
+            return
+
         levels = np.asarray(levels)
         levels = np.clip((levels - self.vmin) / (self.vmax - self.vmin) * 255., 0., 255.)
 
@@ -99,14 +116,13 @@ class QtVTKWidget(QtGui.QWidget):
             else:
                 x = (level - vmin) / float(vmax - vmin)
             color = self._cmap(x)
-            print(x, color)
             actor.GetProperty().SetColor(*color[:3])
             actor.GetProperty().SetOpacity(self._alpha)
 
     def add_contour(self, level, ilevel, color=(1., 1., 1.), alpha=1.):
 
         contour = vtk.vtkMarchingCubes()
-        contour.SetInput(self.readerVolume.GetOutput())
+        contour.SetInput(self.reader_volume.GetOutput())
         contour.SetValue(0, level)
         contour.ComputeNormalsOn()
 
@@ -126,4 +142,3 @@ class QtVTKWidget(QtGui.QWidget):
     def render(self):
         print('rendering')
         self.render_window.Render()
-        
