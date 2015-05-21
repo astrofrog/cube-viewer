@@ -8,13 +8,14 @@ Dependencies
 
 The following dependencies are required:
 
-* Numpy
-* Astropy
-* spectral-cube
-* PyQt
-* VTK
-* Palettable
-* six
+* [Numpy](http://www.numpy.org)
+* [Astropy](http://www.astropy.org)
+* [spectral-cube](http://spectral-cube.readthedocs.org)
+* [PyQt4](http://www.riverbankcomputing.co.uk/software/pyqt/intro)
+* [VTK](http://www.vtk.org/)
+* [Palettable](https://jiffyclub.github.io/palettable/)
+* [six](https://pypi.python.org/pypi/six)
+* [glue](https://www.glueviz.org)
 
 You can easily create a conda environment with these dependencies using:
 
@@ -24,6 +25,8 @@ source activate vtk-viewer-test
 conda install pyqt vtk numpy astropy pip --yes
 pip install spectral_cube palettable
 ```
+
+[Anaconda](https://store.continuum.io/cshop/anaconda/) or [Miniconda](http://conda.pydata.org/miniconda.html) are highly recommended since VTK and PyQt4 are tricky dependencies to install.
 
 Using as a standalone tool
 --------------------------
