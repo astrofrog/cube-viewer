@@ -17,7 +17,7 @@ class GlueVTKViewer(DataViewer):
 
     def add_data(self, data):
         self._vtk_widget.set_data(data['PRIMARY'])
-        initial_level = "{0:.3g}".format(np.percentile(data['PRIMARY'], 99))
+        initial_level = "{0:.3g}".format(np.nanpercentile(data['PRIMARY'], 99))
         self._options_widget.levels = initial_level
         self._options_widget.update_viewer()
         return True
