@@ -48,9 +48,17 @@ cube-viewer ../L1448_13CO.fits 1 2 3 4 5 --stretch-spectral=2.
 Using as a Glue plugin
 ----------------------
 
-To use this as a glue plugin, install this package, then add the following to your glue ``config.py`` file::
+To use this as a glue plugin, simply install this package, and glue should
+recognize it at startup. However, note that this will not work with the Glue
+Mac app, but will work with glue when installed as a normal Python package.
+Note that you can install glue with conda:
 
-    from glue.config import qt_client
-    qt_client.lazy_add('cube_viewer.glue_plugin')
+```
+conda install glueviz
+```
 
-At the moment, this only supports viewing of the main data in a cube, and does not show subsets.
+At the moment, this plugin only supports viewing of the main data in a cube,
+and does not show subsets.
+
+When you drag a 3-d dataset onto the main canvas, one of the viewers available
+will then be 'VTK Isosurfaces'.

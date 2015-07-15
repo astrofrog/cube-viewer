@@ -1,6 +1,10 @@
 import os
 from setuptools import setup, Command
 
+entry_points = """
+[glue.plugins]
+cube_viewer = cube_viewer.glue_plugin:setup
+"""
 
 setup(name='cube-viewer',
       version='0.0.dev',
@@ -16,5 +20,6 @@ setup(name='cube-viewer',
                    "Programming Language :: Python",
                    "License :: OSI Approved :: BSD License",
                   ],
-      scripts=[os.path.join('scripts', 'cube-viewer')]
+      scripts=[os.path.join('scripts', 'cube-viewer')],
+      entry_points=entry_points
      )
